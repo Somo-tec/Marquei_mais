@@ -1,28 +1,11 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, Loader2, Scissors, Palette, PawPrint, Dumbbell, Sparkles, ChevronRight, Zap } from "lucide-react";
+import { Eye, EyeOff, Loader2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "motion/react";
-import { DEMO_PROFILES } from "@/context/DemoProfiles";
 import type { LoginCredentials, RegisterData } from "@/context/AuthContext";
-
-const NICHE_ICONS: Record<string, React.ReactNode> = {
-  barbearia: <Scissors className="w-4 h-4" />,
-  nail: <Palette className="w-4 h-4" />,
-  pet: <PawPrint className="w-4 h-4" />,
-  fitness: <Dumbbell className="w-4 h-4" />,
-  estetica: <Sparkles className="w-4 h-4" />,
-};
-
-const NICHE_DETAILS: Record<string, { pros: number; services: number; clients: number }> = {
-  barbearia: { pros: 3, services: 8, clients: 8 },
-  nail: { pros: 2, services: 9, clients: 7 },
-  pet: { pros: 3, services: 8, clients: 6 },
-  fitness: { pros: 2, services: 7, clients: 9 },
-  estetica: { pros: 4, services: 10, clients: 9 },
-};
 
 interface LoginProps {
   onLogin: (credentials: LoginCredentials) => Promise<void>;
@@ -34,7 +17,7 @@ interface LoginProps {
 export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }: LoginProps) {
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingDemoId, setLoadingDemoId] = useState<string | null>(null);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [successSlug, setSuccessSlug] = useState("");
@@ -54,7 +37,6 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
     setError("");
     setSuccessSlug("");
     setIsLoading(true);
-
     try {
       if (mode === "login") {
         await onLogin({ slug: slug.trim(), mode: "master", password });
@@ -74,12 +56,12 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
     }
   };
 
-  const handleDemoLogin = (profileId: string) => {
-    if (loadingDemoId) return;
-    setLoadingDemoId(profileId);
+  const handleDemoLogin = () => {
+    if (isDemoLoading) return;
+    setIsDemoLoading(true);
     setTimeout(() => {
-      onDemoLogin?.(profileId);
-    }, 800);
+      onDemoLogin?.("barbearia");
+    }, 600);
   };
 
   const toggleMode = () => {
@@ -96,6 +78,7 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
+        {/* Logo */}
         <div className="text-center mb-6">
           <div className="h-12 w-12 bg-[#50CAE6] rounded-xl mx-auto mb-4 flex items-center justify-center">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
@@ -108,11 +91,12 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
           <h1 className="text-2xl font-bold text-gray-900">
             {mode === "login" ? "Acesse sua agenda" : "Crie sua conta gratis"}
           </h1>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-2 text-sm">
             {mode === "login" ? "Gerencie seus agendamentos em poucos cliques" : "Comece a usar o Marquei+ hoje mesmo"}
           </p>
         </div>
 
+        {/* Form card */}
         <Card className="p-6 border-gray-100 shadow-sm overflow-hidden">
           <form onSubmit={handleSubmit} className="space-y-4">
             <AnimatePresence mode="wait">
@@ -173,7 +157,7 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
                   onChange={e => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
                   className="bg-gray-50/50"
                 />
-                <p className="text-xs text-gray-400">O identificador foi gerado na criação da conta</p>
+                <p className="text-xs text-gray-400">Gerado na criação da conta</p>
               </div>
             )}
 
@@ -208,8 +192,8 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
             {successSlug && (
               <div className="p-3 rounded-lg bg-green-50 text-green-700 text-sm space-y-1">
                 <p className="font-semibold">Conta criada!</p>
-                <p>Seu identificador de acesso é: <span className="font-mono font-bold">{successSlug}</span></p>
-                <p className="text-xs text-green-600">Guarde este código — você vai precisar dele para entrar.</p>
+                <p>Seu identificador: <span className="font-mono font-bold">{successSlug}</span></p>
+                <p className="text-xs text-green-600">Guarde este codigo — voce vai precisar para entrar.</p>
               </div>
             )}
 
@@ -219,17 +203,14 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
               disabled={isLoading}
             >
               {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {mode === "login" ? "Entrando..." : "Criando conta..."}
-                </>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />{mode === "login" ? "Entrando..." : "Criando conta..."}</>
               ) : (
                 mode === "login" ? "Entrar" : "Comecar agora"
               )}
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <div className="mt-4 pt-4 border-t border-gray-100 text-center">
             <div className="flex items-center justify-center gap-1 text-sm">
               <span className="text-gray-500">
                 {mode === "login" ? "Nao tem uma conta?" : "Ja tem uma conta?"}
@@ -245,80 +226,36 @@ export function Login({ onLogin, onSignup, onDemoLogin, initialMode = "login" }:
           </div>
         </Card>
 
-        {/* Demo Profiles - Quick Access */}
-        {mode === "login" && onDemoLogin && (
+        {/* Single Demo button */}
+        {onDemoLogin && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-6"
+            transition={{ delay: 0.25 }}
+            className="mt-4"
           >
             <div className="flex items-center gap-3 mb-3">
               <div className="flex-1 h-px bg-gray-200" />
-              <div className="flex items-center gap-1.5 text-xs font-medium text-gray-400 uppercase tracking-wider">
+              <span className="text-xs font-medium text-gray-400 uppercase tracking-wider flex items-center gap-1">
                 <Zap className="w-3 h-3" />
-                Acesso rapido - Demo
-              </div>
+                Acesso rapido
+              </span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
-            <div className="space-y-2">
-              {DEMO_PROFILES.map((profile, idx) => {
-                const details = NICHE_DETAILS[profile.id];
-                const isLoadingThis = loadingDemoId === profile.id;
-
-                return (
-                  <motion.button
-                    key={profile.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 + idx * 0.08 }}
-                    type="button"
-                    disabled={!!loadingDemoId}
-                    onClick={() => handleDemoLogin(profile.id)}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all text-left group disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-sm"
-                      style={{ backgroundColor: profile.color }}
-                    >
-                      {isLoadingThis ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        NICHE_ICONS[profile.id]
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-gray-900 truncate">
-                          {profile.label}
-                        </span>
-                        <span
-                          className="text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0"
-                          style={{ backgroundColor: `${profile.color}15`, color: profile.color }}
-                        >
-                          {profile.niche}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-gray-400">
-                        <span>{details?.services || 0} servicos</span>
-                        <span className="text-gray-200">|</span>
-                        <span>{details?.pros || 0} profissionais</span>
-                        <span className="text-gray-200">|</span>
-                        <span>{details?.clients || 0} clientes</span>
-                      </div>
-                    </div>
-
-                    <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all shrink-0" />
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            <p className="text-center text-[11px] text-gray-400 mt-3">
-              Clique para explorar o app com dados reais de cada nicho
-            </p>
+            <button
+              type="button"
+              disabled={isDemoLoading}
+              onClick={handleDemoLogin}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white border border-gray-200 hover:border-[#50CAE6] hover:shadow-sm transition-all text-sm font-medium text-gray-700 hover:text-[#50CAE6] disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isDemoLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4 text-[#50CAE6]" />
+              )}
+              {isDemoLoading ? "Carregando demo..." : "Explorar como Demo"}
+            </button>
           </motion.div>
         )}
       </motion.div>
