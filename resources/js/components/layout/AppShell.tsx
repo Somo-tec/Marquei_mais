@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Logo } from "@/components/Logo";
-import { Calendar, Home, Settings, Users, Briefcase, Plus, UserCog, MoreHorizontal, ChevronRight, X, MessageCircle } from "lucide-react";
+import { Calendar, Home, Settings, Users, Briefcase, Plus, UserCog, MoreHorizontal, ChevronRight, X, MessageCircle, PanelLeftClose, PanelLeftOpen, Star, BarChart2, Brain, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
 import { NotificationBellDesktop, NotificationBellMobile } from "@/components/NotificationCenter";
@@ -13,6 +13,7 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { totalUnread } = useWhatsAppUnread();
   const navigate = useAppNavigate();
   const currentPage = useCurrentPage();
@@ -29,6 +30,10 @@ export function AppShell({ children }: AppShellProps) {
     { id: "clients", icon: Users, label: "Clientes", description: "Gerencie sua base de clientes" },
     { id: "services", icon: Briefcase, label: "Serviços", description: "Gerencie seus serviços" },
     { id: "professionals", icon: UserCog, label: "Profissionais", description: "Equipe e colaboradores" },
+    { id: "reviews", icon: Star, label: "Avaliações", description: "Feedback dos seus clientes" },
+    { id: "financial", icon: BarChart2, label: "Financeiro", description: "Caixa, entradas e relatórios" },
+    { id: "ai", icon: Brain, label: "IA Insights", description: "Sugestões inteligentes" },
+    { id: "staff", icon: Shield, label: "Equipe (Admin)", description: "Gestão de membros e funções" },
     { id: "settings", icon: Settings, label: "Configurações", description: "Preferências do app" },
   ];
 
@@ -45,19 +50,33 @@ export function AppShell({ children }: AppShellProps) {
     navigate(id);
   };
 
-  const isMoreActive = ["clients", "services", "professionals", "settings"].includes(currentPage);
+  const isMoreActive = ["clients", "services", "professionals", "settings", "reviews", "financial", "ai", "staff"].includes(currentPage);
+
+  const desktopNavItems = [
+    { id: "dashboard", label: "Início", icon: Home },
+    { id: "agenda", label: "Agenda", icon: Calendar },
+    { id: "clients", label: "Clientes", icon: Users },
+    { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+    { id: "services", label: "Serviços", icon: Briefcase },
+    { id: "professionals", label: "Profissionais", icon: UserCog },
+    { id: "reviews", label: "Avaliações", icon: Star },
+    { id: "financial", label: "Financeiro", icon: BarChart2 },
+    { id: "ai", label: "IA Insights", icon: Brain },
+    { id: "staff", label: "Equipe", icon: Shield },
+    { id: "settings", label: "Configurações", icon: Settings },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#1a1f2b] flex flex-col font-sans text-gray-900 dark:text-[#e8ecf4] transition-colors duration-300">
       {/* Mobile Header */}
       <header className="lg:hidden bg-white/80 dark:bg-[#161b25]/90 backdrop-blur-md border-b border-gray-100 dark:border-[#2d3545] p-4 sticky top-0 z-20 flex justify-between items-center h-16 transition-all duration-200">
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
         >
             <Logo variant="icon" className="h-8 w-8" />
         </motion.div>
-        <motion.span 
+        <motion.span
             key={currentPage}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -70,65 +89,174 @@ export function AppShell({ children }: AppShellProps) {
           {currentPage === "services" && "Serviços"}
           {currentPage === "professionals" && "Profissionais"}
           {currentPage === "whatsapp" && "WhatsApp"}
+          {currentPage === "reviews" && "Avaliações"}
+          {currentPage === "financial" && "Financeiro"}
+          {currentPage === "ai" && "IA Insights"}
+          {currentPage === "staff" && "Equipe"}
         </motion.span>
         <NotificationBellMobile />
       </header>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-white dark:bg-[#161b25] border-r border-gray-100 dark:border-[#2d3545] flex-col z-20 shadow-sm">
-        <div className="p-8 flex justify-center border-b border-gray-50 dark:border-[#2d3545]">
-          <Logo className="h-24 w-full" />
+      <motion.aside
+        animate={{ width: sidebarCollapsed ? 64 : 256 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        className="group/sidebar hidden lg:flex fixed left-0 top-0 h-full border-r border-gray-100 dark:border-[#2d3545] flex-col z-20 overflow-hidden"
+      >
+        {/* Logo area */}
+        <div className={`flex items-center border-b border-gray-100/60 dark:border-[#2d3545] ${sidebarCollapsed ? "h-16 justify-center px-0" : "p-8 justify-center"}`}>
+          <AnimatePresence mode="wait">
+            {sidebarCollapsed ? (
+              <motion.div
+                key="icon"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.15 }}
+              >
+                <Logo variant="icon" className="h-8 w-8" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="w-full"
+              >
+                <Logo className="h-24 w-full" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        
-        <nav className="flex-1 p-6 space-y-2">
-            {[
-                { id: "dashboard", label: "Início", icon: Home },
-                { id: "agenda", label: "Agenda", icon: Calendar },
-                { id: "clients", label: "Clientes", icon: Users },
-                { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
-                { id: "services", label: "Serviços", icon: Briefcase },
-                { id: "professionals", label: "Profissionais", icon: UserCog },
-                { id: "settings", label: "Configurações", icon: Settings },
-            ].map((item) => (
-                <motion.div key={item.id} whileHover={{ scale: 1.02, x: 5 }} whileTap={{ scale: 0.98 }}>
-                    <Button 
-                        variant={currentPage === item.id ? "secondary" : "ghost"} 
-                        className={`w-full justify-start text-base h-12 transition-all duration-200 relative ${currentPage === item.id ? (item.id === "whatsapp" ? "bg-[#25D366]/10 dark:bg-[#25D366]/15 text-[#25D366]" : "bg-blue-50 dark:bg-[#50CAE6]/15 text-[#50CAE6]") : "hover:bg-gray-50 dark:hover:bg-[#232938]"}`}
-                        onClick={() => navigate(item.id)}
-                    >
-                        <div className="relative mr-3">
-                          <item.icon className={`h-5 w-5 ${currentPage === item.id ? (item.id === "whatsapp" ? "text-[#25D366]" : "text-[#50CAE6]") : (item.id === "whatsapp" ? "text-[#25D366]" : "text-gray-400")}`} />
-                          {item.id === "whatsapp" && totalUnread > 0 && (
-                            <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 bg-[#25D366] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
-                              {totalUnread > 99 ? "99+" : totalUnread}
-                            </span>
-                          )}
-                        </div>
+
+        <nav className="flex-1 p-3 space-y-1 overflow-hidden">
+          {desktopNavItems.map((item) => {
+            const isActive = currentPage === item.id;
+            const isWA = item.id === "whatsapp";
+            return (
+              <motion.div key={item.id} whileHover={{ scale: 1.02, x: sidebarCollapsed ? 0 : 4 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={`w-full h-11 transition-all duration-200 relative
+                    ${sidebarCollapsed ? "justify-center px-0" : "justify-start px-3"}
+                    ${isActive
+                      ? (isWA ? "bg-[#25D366]/10 dark:bg-[#25D366]/15 text-[#25D366]" : "bg-blue-50 dark:bg-[#50CAE6]/15 text-[#50CAE6]")
+                      : "hover:bg-gray-50 dark:hover:bg-[#232938]"
+                    }`}
+                  onClick={() => navigate(item.id)}
+                  title={sidebarCollapsed ? item.label : undefined}
+                >
+                  <div className={`relative shrink-0 ${sidebarCollapsed ? "" : "mr-3"}`}>
+                    <item.icon className={`h-5 w-5 ${isActive ? (isWA ? "text-[#25D366]" : "text-[#50CAE6]") : (isWA ? "text-[#25D366]" : "text-gray-400")}`} />
+                    {isWA && totalUnread > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 bg-[#25D366] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                        {totalUnread > 99 ? "99+" : totalUnread}
+                      </span>
+                    )}
+                  </div>
+                  <AnimatePresence>
+                    {!sidebarCollapsed && (
+                      <motion.span
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "auto" }}
+                        exit={{ opacity: 0, width: 0 }}
+                        transition={{ duration: 0.15 }}
+                        className="overflow-hidden whitespace-nowrap text-sm font-medium"
+                      >
                         {item.label}
-                    </Button>
-                </motion.div>
-            ))}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </Button>
+              </motion.div>
+            );
+          })}
         </nav>
 
-        {/* Desktop notification bell + new appointment button */}
-        <div className="px-6 pb-6 pt-2 flex items-center gap-2">
-            <motion.div className="flex-1" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }}>
-                <Button className="w-full h-11 text-sm font-medium bg-[#50CAE6] hover:bg-[#45b0c9] text-white rounded-xl transition-all" onClick={() => navigate("create")}>
-                    <Plus className="mr-2 h-5 w-5" /> Novo Agendamento
-                </Button>
-            </motion.div>
-            <NotificationBellDesktop />
+        {/* New appointment button */}
+        <div className={`pt-2 ${sidebarCollapsed ? "px-3" : "px-5"}`}>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              className={`w-full h-11 text-sm font-medium bg-[#50CAE6] hover:bg-[#45b0c9] text-white rounded-xl transition-all ${sidebarCollapsed ? "px-0 justify-center" : ""}`}
+              onClick={() => navigate("create")}
+              title={sidebarCollapsed ? "Novo Agendamento" : undefined}
+            >
+              <Plus className={`h-5 w-5 ${sidebarCollapsed ? "" : "mr-2"}`} />
+              <AnimatePresence>
+                {!sidebarCollapsed && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="overflow-hidden whitespace-nowrap"
+                  >
+                    Novo Agendamento
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </motion.div>
         </div>
-      </aside>
+
+        {/* Collapse toggle button */}
+        <div className={`pb-5 pt-2 border-t border-gray-100/60 dark:border-[#2d3545] mt-3 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200 ${sidebarCollapsed ? "px-3" : "px-3"}`}>
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className={`w-full h-10 flex items-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-[#e8ecf4] hover:bg-gray-50 dark:hover:bg-[#232938] transition-colors ${sidebarCollapsed ? "justify-center px-0" : "px-3 gap-3"}`}
+            title={sidebarCollapsed ? "Expandir menu" : undefined}
+          >
+            {sidebarCollapsed
+              ? <PanelLeftOpen className="h-5 w-5 shrink-0" />
+              : <PanelLeftClose className="h-5 w-5 shrink-0" />
+            }
+            <AnimatePresence>
+              {!sidebarCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="overflow-hidden whitespace-nowrap text-sm font-medium"
+                >
+                  Recolher menu
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+      </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 transition-all duration-200">
+      <motion.main
+        animate={{ marginLeft: sidebarCollapsed ? 64 : 256 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        className="flex-1 hidden lg:block"
+      >
+        {/* Desktop Top Bar — sem fundo */}
+        <div className="flex items-center justify-end px-6 h-16 sticky top-0 z-10">
+          <NotificationBellDesktop />
+        </div>
+
         <div className={`w-full ${
-          currentPage === "whatsapp" 
-            ? "h-[calc(100vh-4rem)] lg:h-screen p-0 lg:p-4 lg:pl-0 overflow-hidden" 
+          currentPage === "whatsapp"
+            ? "h-[calc(100vh-4rem)] p-0 lg:p-4 lg:pl-0 overflow-hidden"
             : "max-w-7xl mx-auto p-4 md:p-8 pb-24 lg:pb-8"
         }`}>
-            {children}
+          {children}
+        </div>
+      </motion.main>
+
+      {/* Mobile main (no sidebar) */}
+      <main className="flex-1 lg:hidden">
+        <div className={`w-full ${
+          currentPage === "whatsapp"
+            ? "h-[calc(100vh-8rem)] p-0 overflow-hidden"
+            : "max-w-7xl mx-auto p-4 md:p-8 pb-24"
+        }`}>
+          {children}
         </div>
       </main>
 
@@ -151,12 +279,10 @@ export function AppShell({ children }: AppShellProps) {
               transition={{ type: "spring", damping: 28, stiffness: 300 }}
               className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#161b25] rounded-t-2xl z-[70] shadow-xl pb-safe"
             >
-              {/* Drag Handle */}
               <div className="flex justify-center pt-3 pb-2">
                 <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
               </div>
 
-              {/* Header */}
               <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-[#e8ecf4]">Mais opções</h3>
                 <button
@@ -167,7 +293,6 @@ export function AppShell({ children }: AppShellProps) {
                 </button>
               </div>
 
-              {/* Menu Items */}
               <div className="p-3">
                 {moreMenuItems.map((item, index) => {
                   const isActive = currentPage === item.id;
@@ -209,7 +334,6 @@ export function AppShell({ children }: AppShellProps) {
                 })}
               </div>
 
-              {/* Bottom safe spacing */}
               <div className="h-4" />
             </motion.div>
           </>
@@ -245,14 +369,14 @@ export function AppShell({ children }: AppShellProps) {
               key={item.id}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleNavClick(item.id)}
-              className={`flex flex-col items-center justify-center w-full h-full space-y-1 relative`}
+              className="flex flex-col items-center justify-center w-full h-full space-y-1 relative"
             >
               {isActive && (
-                  <motion.div 
-                    layoutId="nav-pill"
-                    className={`absolute -top-2 w-8 h-1 ${pillColor}`}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
+                <motion.div
+                  layoutId="nav-pill"
+                  className={`absolute -top-2 w-8 h-1 ${pillColor}`}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
               )}
               <div className="relative">
                 <item.icon className={`h-6 w-6 transition-colors duration-200 ${isActive ? activeColor : inactiveColor}`} />
@@ -263,7 +387,7 @@ export function AppShell({ children }: AppShellProps) {
                 )}
               </div>
               <span className={`text-[10px] font-medium transition-colors duration-200 ${isActive ? activeColor : inactiveColor}`}>
-                  {item.label}
+                {item.label}
               </span>
             </motion.button>
           );

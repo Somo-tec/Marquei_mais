@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AiController;
+use App\Http\Controllers\Api\OrgController;
 use App\Http\Controllers\Api\AppointmentsController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientsController;
@@ -19,6 +20,10 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 // ─── Autenticadas (qualquer staff) ────────────────────────────────────────
 Route::middleware('staff.token')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
+
+    // Org settings
+    Route::get('/org', [OrgController::class, 'show']);
+    Route::patch('/org/settings', [OrgController::class, 'update']);
 
     // Appointments
     Route::get('/appointments', [AppointmentsController::class, 'index']);
