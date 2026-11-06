@@ -1,100 +1,147 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <style>
-:root{--blue:#50CAE6;--b50:#EEFAFD;--b100:#DDF4FA;--b200:#BDEBF6;--navy:#1A1F2B;--paper:#F6F9FA;--muted:#5B6676;--gold:#F5B50A}
+/* Fiel ao sistema: Tailwind (gray-50/100/200/500/900), ciano #50CAE6 com texto branco, escala ~1.92x de um celular de 375px */
+:root{--cy:#50CAE6;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g900:#111827;--green:#16A34A}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:720px;height:1480px;overflow:hidden;background:var(--paper);font-family:"Segoe UI",system-ui,sans-serif;color:var(--navy)}
+html,body{width:720px;height:1480px;overflow:hidden;background:var(--g50);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--g900)}
 #stage{position:relative;width:720px;height:1480px;overflow:hidden}
 .layer{position:absolute;inset:0;display:none}
 .abs{position:absolute}
-.card{position:absolute;left:40px;width:640px;height:120px;background:#fff;border-radius:32px;padding:0 36px;display:flex;align-items:center;justify-content:space-between}
-.card b{font-size:34px;font-weight:700}.card small{display:block;font-size:26px;color:var(--muted);margin-top:4px}
-.chip{position:absolute;width:200px;height:84px;border-radius:24px;background:var(--b100);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700}
-.bubble{position:absolute;border-radius:28px;padding:24px 28px;font-size:30px;line-height:1.32;background:#fff;color:var(--navy);width:540px}
-.bubble.l{left:32px;border-top-left-radius:8px}
-.bubble.r{right:32px;border-top-right-radius:8px;background:var(--b200);width:auto}
-.bubble b{font-weight:700}
-.time{font-size:20px;color:var(--muted);text-align:right;margin-top:6px}
-.bar{position:absolute;left:0;top:0;width:720px;height:250px;background:var(--navy);color:#fff}
+svg{display:block;flex:none}
+/* booking */
+#card{position:absolute;left:30px;top:258px;width:660px;height:1082px;background:#fff;border:2px solid var(--g100);border-radius:23px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+#prog{position:absolute;left:0;top:0;height:8px;background:var(--cy)}
+#progbg{position:absolute;left:0;top:0;width:100%;height:8px;background:var(--g100)}
+.step{position:absolute;inset:0;padding:54px 46px 46px}
+.h2{font-size:38px;font-weight:600;line-height:1.25}
+.svc{position:absolute;left:46px;width:568px;border:2px solid var(--g100);border-radius:23px;padding:31px;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.svc .n{font-size:31px;font-weight:600}.svc .d{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:26px;color:var(--g500)}.svc .p{font-size:31px;font-weight:600}
+.dc{position:absolute;top:0;width:138px;height:161px;border-radius:31px;border:2px solid var(--g200);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--g500)}
+.dc .w{font-size:21px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:6px}.dc .m{font-size:46px;font-weight:700;color:#4B5563}
+.slot{position:absolute;width:174px;height:92px;border:2px solid var(--g200);border-radius:15px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:500}
+.sum{position:absolute;left:46px;width:568px;background:var(--g50);border-radius:23px;padding:31px}
+.sr{display:flex;justify-content:space-between;align-items:center;height:48px}.sr span{font-size:26px;color:var(--g500)}.sr b{font-size:31px;font-weight:500}
+.lab{position:absolute;left:46px;font-size:27px;font-weight:500}
+.inp{position:absolute;left:46px;width:568px;height:92px;border:2px solid var(--g200);border-radius:15px;background:#fff;padding-left:84px;display:flex;align-items:center;font-size:31px}
+.inp .ic{position:absolute;left:24px;top:30px}
+.ph{color:var(--g400)}
+.btn{position:absolute;left:46px;width:568px;height:107px;border-radius:15px;background:var(--cy);color:#fff;font-size:34px;font-weight:600;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 16px rgba(80,202,230,.3)}
+/* chat */
+.bar{position:absolute;left:0;top:0;width:720px;height:250px;background:#1A1F2B;color:#fff}
+.bubble{position:absolute;border-radius:28px;padding:24px 28px;font-size:30px;line-height:1.32;background:#fff;color:#111827;width:540px}
+.bubble.l{left:32px;border-top-left-radius:8px}.bubble.r{right:32px;border-top-right-radius:8px;background:#D3F1F9;width:auto}
+.bubble b{font-weight:700}.time{font-size:20px;color:var(--g500);text-align:right;margin-top:6px}
 .dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#9AA5B1;margin:0 6px}
-#touch{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(26,31,43,.22);border:5px solid rgba(26,31,43,.45);opacity:0;z-index:50;pointer-events:none}
-.row{position:absolute;left:40px;width:640px;height:150px;background:#fff;border-radius:32px;display:flex;align-items:center;padding:0 28px;gap:24px}
-.tbox{width:96px;height:96px;border-radius:24px;background:var(--b50);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;flex:none}
-.row .n{font-size:34px;font-weight:700}.row .s{font-size:26px;color:var(--muted);margin-top:2px}
-.ck{margin-left:auto;width:48px;height:48px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
+.av{width:84px;height:84px;border-radius:50%;background:var(--cy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700}
+/* dashboard */
+.cy{background:var(--cy);color:#fff}
+.stat{position:absolute;top:0;width:310px;height:190px;background:#fff;border-radius:38px;padding:31px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.stat .t{font-size:19px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--g500)}
+.chipi{position:absolute;right:26px;top:26px;width:61px;height:61px;border-radius:17px;background:var(--cy);display:flex;align-items:center;justify-content:center}
+.row{position:absolute;left:40px;width:640px;height:130px;background:#fff;border-radius:31px;display:flex;align-items:center;padding:0 28px;gap:24px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.tbox{width:86px;height:86px;border-radius:23px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:700;flex:none}
+.row .n{font-size:32px;font-weight:600}.row .s{font-size:25px;color:var(--g500);margin-top:2px}
+.ck{margin-left:auto;width:48px;height:48px;border-radius:50%;background:var(--cy);display:flex;align-items:center;justify-content:center}
+#touch{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(17,24,39,.18);border:5px solid rgba(17,24,39,.4);opacity:0;z-index:50;pointer-events:none}
 </style></head><body>
 <div id="stage">
 
-<!-- Trecho 1: pagina de agendamento -->
-<div class="layer" id="L1" style="background:var(--paper)">
-  <div class="abs" id="b-head" style="left:40px;top:130px;display:flex;align-items:center;gap:24px">
-    <div style="width:96px;height:96px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center">
-      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>
+<!-- Trecho 1: pagina publica de agendamento (fiel ao PublicBooking) -->
+<div class="layer" id="L1" style="background:var(--g50)">
+  <div class="abs" id="b-head" style="left:30px;top:110px"><div style="font-size:42px;font-weight:700">Barbearia do Léo</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px;font-size:27px;color:var(--g500)" id="addr"></div></div>
+  <div id="card">
+    <div id="progbg"></div><div id="prog"></div>
+    <!-- A: servicos -->
+    <div class="step" id="sA"><div class="h2">O que você deseja agendar?</div>
+      <div class="svc" id="sv0" style="top:150px"><div><div class="n">Corte masculino</div><div class="d" data-ic="clock">40 min</div></div><div class="p">R$ 45</div></div>
+      <div class="svc" id="sv1" style="top:318px"><div><div class="n">Barba</div><div class="d" data-ic="clock">30 min</div></div><div class="p">R$ 30</div></div>
+      <div class="svc" id="sv2" style="top:486px"><div><div class="n">Corte + barba</div><div class="d" data-ic="clock">70 min</div></div><div class="p">R$ 65</div></div>
     </div>
-    <div><div style="font-size:42px;font-weight:700">Barbearia do Léo</div><div style="font-size:28px;color:var(--muted)">Agende seu horário</div></div>
-  </div>
-  <div class="abs" id="b-l1" style="left:40px;top:290px;font-size:32px;font-weight:700">Serviços</div>
-  <div class="card" id="sv0" style="top:350px"><div><b>Corte masculino</b><small>40 min</small></div><b>R$ 45</b></div>
-  <div class="card" id="sv1" style="top:490px"><div><b>Barba</b><small>30 min</small></div><b>R$ 30</b></div>
-  <div class="card" id="sv2" style="top:630px"><div><b>Corte + barba</b><small>1h 10</small></div><b>R$ 65</b></div>
-  <div id="hours">
-    <div class="abs" style="left:40px;top:818px;font-size:32px;font-weight:700">Horários livres · sexta</div>
-    <div class="chip" id="h0" style="left:40px;top:880px">09:00</div>
-    <div class="chip" id="h1" style="left:260px;top:880px">09:40</div>
-    <div class="chip" id="h2" style="left:480px;top:880px">10:20</div>
-    <div class="chip" id="h3" style="left:40px;top:984px">11:00</div>
-    <div class="chip" id="h4" style="left:260px;top:984px">14:00</div>
-    <div class="chip" id="h5" style="left:480px;top:984px">14:40</div>
-  </div>
-  <div class="abs" id="btn" style="left:40px;top:1120px;width:640px;height:110px;border-radius:55px;background:var(--navy);color:#fff;font-size:36px;font-weight:700;display:flex;align-items:center;justify-content:center">Confirmar horário</div>
-  <div class="abs" id="ok" style="inset:0;background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">
-    <div id="okc" style="width:240px;height:240px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center">
-      <svg width="130" height="130" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path id="okp" d="M5 12.5 10 17.5 19 7.5" stroke-dasharray="20" stroke-dashoffset="20"/></svg>
+    <!-- B: data e horario -->
+    <div class="step" id="sB">
+      <div style="display:flex;align-items:center;gap:6px;margin-left:-8px"><div data-ic="chev" style="width:61px;height:61px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div><div class="h2">Escolha o horário</div></div>
+      <div class="abs" style="left:46px;top:164px;display:flex;align-items:center;gap:12px;font-size:27px;font-weight:700"><span data-ic="cal"></span>Escolha o dia</div>
+      <div class="abs" id="days" style="left:46px;top:222px;width:568px;height:170px">
+        <div class="dc" id="dc0" style="left:0"><div class="w">Hoje</div><div class="m">6</div></div>
+        <div class="dc" id="dc1" style="left:161px"><div class="w">Sáb</div><div class="m">7</div></div>
+        <div class="dc" id="dc2" style="left:322px;background:var(--g100);opacity:.55"><div class="w">Fechado</div><div class="m" style="color:#D1D5DB">8</div></div>
+        <div class="dc" id="dc3" style="left:483px"><div class="w">Seg</div><div class="m">9</div></div>
+      </div>
+      <div id="slots">
+        <div class="abs" style="left:46px;top:440px;right:46px;display:flex;align-items:center;gap:12px;font-size:27px;font-weight:700"><span data-ic="clock"></span>Horários disponíveis<span style="margin-left:auto;font-size:23px;font-weight:400;color:var(--g400)">6 horários</span></div>
+        <div class="slot" id="s0" style="left:46px;top:506px">09:00</div><div class="slot" id="s1" style="left:243px;top:506px">09:40</div><div class="slot" id="s2" style="left:440px;top:506px">10:20</div>
+        <div class="slot" id="s3" style="left:46px;top:621px">11:00</div><div class="slot" id="s4" style="left:243px;top:621px">14:00</div><div class="slot" id="s5" style="left:440px;top:621px">14:40</div>
+      </div>
     </div>
-    <div id="okt" style="text-align:center"><div style="font-size:54px;font-weight:700;color:#fff">Horário confirmado</div><div style="font-size:32px;margin-top:10px">Sexta, 10:20 · Corte masculino</div></div>
+    <!-- C: formulario -->
+    <div class="step" id="sC">
+      <div style="display:flex;align-items:center;gap:6px;margin-left:-8px"><div data-ic="chev" style="width:61px;height:61px;border-radius:50%;display:flex;align-items:center;justify-content:center"></div><div class="h2">Confirme seus dados</div></div>
+      <div class="sum" style="top:150px">
+        <div class="sr"><span>Serviço</span><b>Corte masculino</b></div><div style="height:2px;background:var(--g200);margin:12px 0"></div>
+        <div class="sr"><span>Data</span><b>7 de novembro</b></div>
+        <div class="sr" style="margin-top:12px"><span>Horário</span><b>10:20</b></div>
+        <div class="sr" style="margin-top:12px"><span>Valor</span><b>R$ 45</b></div>
+      </div>
+      <div class="lab" style="top:520px">Seu Nome</div>
+      <div class="inp" id="f1" style="top:566px"><span class="ic" data-ic="user"></span><span id="t1"></span><span class="ph" id="p1">Como você gostaria de ser chamado?</span></div>
+      <div class="lab" style="top:690px">WhatsApp</div>
+      <div class="inp" id="f2" style="top:736px"><span class="ic" data-ic="phone"></span><span id="t2"></span><span class="ph" id="p2">(00) 00000-0000</span></div>
+      <div class="btn" id="cbtn" style="top:890px">Confirmar Agendamento</div>
+    </div>
+    <!-- D: sucesso -->
+    <div class="step" id="sD" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-bottom:80px">
+      <div id="okc" style="width:184px;height:184px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center" data-ic="okc"></div>
+      <div id="okh" style="font-size:41px;white-space:nowrap;font-weight:700;margin-top:44px">Agendamento Confirmado!</div>
+      <div id="okp" style="font-size:31px;color:var(--g500);margin-top:18px;max-width:500px;line-height:1.4">Tudo certo, Carlos Silva. Seu horário está confirmado!</div>
+      <div id="okb" style="margin-top:54px;width:100%;background:var(--g50);border:2px solid var(--g100);border-radius:23px;padding:44px"><div style="font-size:31px;font-weight:500">Corte masculino</div><div style="font-size:27px;color:var(--g500);margin-top:6px">sábado, 7 de novembro às 10:20</div></div>
+    </div>
   </div>
+  <div class="abs" id="foot" style="left:0;width:720px;top:1380px;text-align:center;font-size:23px;color:var(--g400)">Agendamento simples via <b style="color:var(--g500)">Marquei+</b></div>
 </div>
 
-<!-- Chat: confirmacao + lembrete (trecho 2) -->
+<!-- Trecho 2: confirmacao + lembrete no WhatsApp -->
 <div class="layer" id="L2" style="background:#EFEAE2">
-  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px">
-    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
-    <div style="width:84px;height:84px;border-radius:50%;background:var(--blue);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700">M</div>
-    <div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
-  <div class="bubble l" id="w1" style="top:300px"><div style="font-weight:700;margin-bottom:6px">Agendamento confirmado ✅</div>Oi, Carlos! Seu corte está marcado para <b>sexta, 10:20</b>. Te esperamos!<div class="time">09:12</div></div>
+  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px"><span data-ic="chevw"></span><div class="av">M</div><div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
+  <div class="bubble l" id="w1" style="top:300px"><div style="font-weight:700;margin-bottom:6px">Agendamento confirmado ✅</div>Oi, Carlos! Seu corte está marcado para <b>sábado, 10:20</b>. Te esperamos!<div class="time">09:12</div></div>
   <div class="bubble r" id="w2" style="top:570px"><span>Perfeito, obrigado!</span><div class="time">09:13 <span id="tk">✓✓</span></div></div>
   <div class="bubble l" id="w3" style="top:730px"><div style="font-weight:700;margin-bottom:6px">Lembrete 🔔</div>Amanhã às <b>10:20</b>. Precisa remarcar? É só responder aqui.<div class="time">19:00</div></div>
   <div class="bubble l" id="ty" style="width:150px;padding:28px 18px;text-align:center"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
 </div>
 
-<!-- Chat: avaliacao (trecho 3) -->
+<!-- Trecho 3: avaliacao -->
 <div class="layer" id="L3" style="background:#EFEAE2">
-  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px">
-    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
-    <div style="width:84px;height:84px;border-radius:50%;background:var(--blue);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700">M</div>
-    <div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
+  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px"><span data-ic="chevw"></span><div class="av">M</div><div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
   <div class="bubble l" id="r1" style="top:300px;padding-bottom:0;overflow:hidden"><div style="font-weight:700;margin-bottom:6px">Como foi seu corte? ✂️</div>Obrigado pela visita, Carlos! Sua opinião ajuda muito a gente.<div class="time" style="margin-bottom:14px">11:05</div>
-    <div id="rbtn" style="margin:0 -28px;padding:26px;text-align:center;font-weight:700;font-size:32px;border-top:2px solid #E6EBF0;color:#168CA8">Avaliar no Google</div></div>
+    <div id="rbtn" style="margin:0 -28px;padding:26px;text-align:center;font-weight:700;font-size:32px;border-top:2px solid #E6EBF0;color:#1596B3">Avaliar no Google</div></div>
   <div class="bubble l" id="ty3" style="width:150px;padding:28px 18px;text-align:center;top:300px"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-  <div class="abs" id="shade" style="inset:0;background:rgba(26,31,43,.45)"></div>
+  <div class="abs" id="shade" style="inset:0;background:rgba(17,24,39,.45)"></div>
   <div class="abs" id="sheet" style="left:0;top:520px;width:720px;height:960px;background:#fff;border-radius:56px 56px 0 0;padding:44px 40px">
     <div style="width:90px;height:10px;border-radius:5px;background:#D5DCE3;margin:0 auto 40px"></div>
-    <div style="display:flex;align-items:center;gap:22px"><div style="width:80px;height:80px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700">M</div><div style="font-size:38px;font-weight:700">Avaliar Barbearia do Léo</div></div>
+    <div style="display:flex;align-items:center;gap:22px"><div class="av" style="width:80px;height:80px;font-size:38px">M</div><div style="font-size:38px;font-weight:700">Avaliar Barbearia do Léo</div></div>
     <div class="abs" id="stars" style="left:95px;top:240px;width:530px;height:90px"></div>
-    <div class="abs" id="field" style="left:40px;top:400px;width:640px;height:300px;border-radius:32px;background:var(--paper);padding:32px;font-size:34px;line-height:1.35"><span id="typed"></span><span id="caret">|</span></div>
-    <div class="abs" id="pub" style="left:40px;top:760px;width:640px;height:110px;border-radius:55px;background:var(--blue);color:var(--navy);font-size:36px;font-weight:700;display:flex;align-items:center;justify-content:center"><span id="pubt">Publicar</span></div>
+    <div class="abs" style="left:40px;top:400px;width:640px;height:300px;border-radius:32px;background:var(--g50);border:2px solid var(--g200);padding:32px;font-size:34px;line-height:1.35"><span id="typed"></span><span id="caret">|</span></div>
+    <div class="abs" id="pub" style="left:40px;top:760px;width:640px;height:110px;border-radius:15px;background:var(--cy);color:#fff;font-size:36px;font-weight:600;display:flex;align-items:center;justify-content:center"><span id="pubt">Publicar</span></div>
   </div>
 </div>
 
-<!-- Agenda (trecho 4) -->
-<div class="layer" id="L4" style="background:var(--paper)">
-  <div class="abs" id="a-h" style="left:40px;top:130px;font-size:56px;font-weight:700">Hoje, sexta</div>
-  <div class="abs" id="a-c1" style="left:40px;top:250px;width:310px;height:170px;border-radius:32px;background:#fff;padding:28px"><div style="font-size:26px;color:var(--muted)">Agendamentos</div><div id="cnt1" style="font-size:64px;font-weight:700;margin-top:6px">8</div></div>
-  <div class="abs" id="a-c2" style="left:370px;top:250px;width:310px;height:170px;border-radius:32px;background:var(--blue);padding:28px"><div style="font-size:26px">Faturamento</div><div id="cnt2" style="font-size:64px;font-weight:700;margin-top:6px">R$ 420</div></div>
-  <div class="abs" id="a-l" style="left:40px;top:455px;font-size:34px;font-weight:700">Próximos</div>
-  <div class="row" id="ra"><div class="tbox">09:00</div><div><div class="n">Pedro Alves</div><div class="s">Barba</div></div><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div></div>
-  <div class="row" id="rb"><div class="tbox">09:40</div><div><div class="n">Rafael Costa</div><div class="s">Corte + barba</div></div><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div></div>
-  <div class="row" id="rn"><div class="tbox" style="background:var(--b200)">10:20</div><div><div class="n">Carlos Silva</div><div class="s">Corte masculino</div></div><div class="abs" id="newb" style="right:28px;top:50px;padding:10px 22px;border-radius:30px;background:var(--blue);font-size:24px;font-weight:700">Novo</div></div>
+<!-- Trecho 4: inicio (fiel ao Dashboard) -->
+<div class="layer" id="L4" style="background:var(--g50)">
+  <div class="abs" id="d-h" style="left:40px;top:110px"><div style="font-size:48px;font-weight:700">Início</div><div style="font-size:27px;color:var(--g500);margin-top:2px">Resumo do seu dia.</div></div>
+  <div class="abs cy" id="d-next" style="left:40px;top:270px;width:640px;border-radius:38px;padding:38px">
+    <div style="font-size:23px;font-weight:500;letter-spacing:.08em;text-transform:uppercase">Próximo Cliente</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:16px"><div><div style="font-size:84px;font-weight:700;line-height:1">09:00</div><div style="font-size:33px;font-weight:600;margin-top:14px">Pedro Alves</div><div style="font-size:27px;margin-top:2px">Barba · em 12 min</div></div>
+    <div style="background:#fff;color:var(--cy);font-size:27px;font-weight:600;padding:16px 30px;border-radius:15px">Ver agenda</div></div>
+  </div>
+  <div class="abs" id="d-stats" style="left:40px;top:640px;width:640px;height:190px">
+    <div class="stat" id="st1" style="left:0"><div class="t">Agendamentos</div><div class="chipi" data-ic="calw"></div><div style="margin-top:34px"><span id="cnt1" style="font-size:50px;font-weight:700">8</span><span style="font-size:23px;color:var(--g400);margin-left:8px">hoje</span></div></div>
+    <div class="stat" id="st2" style="left:330px"><div class="t">Faturamento</div><div class="chipi" data-ic="dollar"></div><div style="margin-top:34px"><span id="cnt2" style="font-size:50px;font-weight:700">R$ 420</span></div></div>
+  </div>
+  <div class="abs" id="d-l" style="left:40px;top:862px;font-size:34px;font-weight:700">Agenda do dia</div>
+  <div class="row" id="ra"><div class="tbox">09:00</div><div><div class="n">Pedro Alves</div><div class="s">Barba</div></div><div class="ck" data-ic="ckw"></div></div>
+  <div class="row" id="rb"><div class="tbox">09:40</div><div><div class="n">Rafael Costa</div><div class="s">Corte + barba</div></div><div class="ck" data-ic="ckw"></div></div>
+  <div class="row" id="rn"><div class="tbox" style="background:#D3F1F9">10:20</div><div><div class="n">Carlos Silva</div><div class="s">Corte masculino</div></div><div id="newb" style="margin-left:auto;padding:10px 24px;border-radius:30px;background:var(--cy);color:#fff;font-size:24px;font-weight:700">Novo</div><div class="ck" id="rnck" data-ic="ckw" style="position:absolute;right:28px;top:41px"></div></div>
   <div class="row" id="rc"><div class="tbox">11:30</div><div><div class="n">Bruno Lima</div><div class="s">Corte masculino</div></div></div>
   <div class="row" id="rd"><div class="tbox">14:00</div><div><div class="n">Diego Souza</div><div class="s">Barba</div></div></div>
 </div>
@@ -109,129 +156,123 @@ const $=id=>document.getElementById(id);
 function put(el,o,x=0,y=0,s=1){el.style.opacity=o;el.style.transform=`translate(${x}px,${y}px) scale(${s})`;}
 function show(id,on){$(id).style.display=on?'block':'none'}
 
-// Trilha unica do toque: [t,x,y,opacidade,escala]
-const TOUCH=[
- [.6,560,1100,0,1],[.8,540,900,1,1],[1.1,360,385,1,1],[1.25,360,385,1,.8],[1.45,360,385,0,1],
- [2.3,520,1100,0,1],[2.5,500,1000,1,1],[3.0,580,892,1,1],[3.15,580,892,1,.8],[3.35,580,892,0,1],
- [4.0,520,1300,0,1],[4.2,500,1250,1,1],[4.6,360,1175,1,1],[4.75,360,1175,1,.8],[4.95,360,1175,0,1],
- [14.0,520,1300,0,1],[14.2,500,1100,1,1],[14.6,360,690,1,1],[14.72,360,690,1,.8],[14.9,360,690,0,1],
- [15.3,520,1250,0,1],[15.5,520,1050,1,1],[15.9,580,850,1,1],[16.0,580,850,1,.8],[16.2,580,850,0,1],
- [17.2,520,1350,0,1],[17.35,480,1350,1,1],[17.6,360,1330,1,1],[17.72,360,1330,1,.8],[17.9,360,1330,0,1]
-];
+// Icones (lucide)
+const IC={
+ pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+ clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ chev:'<path d="m15 18-6-6 6-6"/>',
+ user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+ phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+ okc:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+ ck:'<path d="M20 6 9 17l-5-5"/>',
+ dollar:'<line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'
+};
+function svg(name,size,color,sw=2){return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${IC[name]}</svg>`}
+const MAP={clock:[24,'#6B7280'],chev:[38,'#111827'],cal:[27,'#6B7280'],user:[34,'#9CA3AF'],phone:[34,'#9CA3AF'],okc:[96,'#fff',2],chevw:[44,'#fff',2.4],calw:[32,'#fff'],dollar:[32,'#fff'],ckw:[26,'#fff',3]};
+document.querySelectorAll('[data-ic]').forEach(el=>{let k=el.dataset.ic,m=MAP[k];let n=k==='chevw'?'chev':k==='calw'?'cal':k==='ckw'?'ck':k;
+  const tag=svg(n,m[0],m[1],m[2]||2);
+  if(el.classList.contains('d'))el.insertAdjacentHTML('afterbegin',tag);else el.insertAdjacentHTML(el.children.length&&!el.classList.contains('ck')&&!el.classList.contains('chipi')?'afterbegin':'afterbegin',tag);});
+$('addr').innerHTML=svg('pin',22,'#6B7280')+'Rua das Flores, 120 · Centro';
+
+// ---- toques: cada toque e uma abordagem + pressao + soltura, mirando o centro de um elemento
+const TAPS=[];const tap=(t,id)=>TAPS.push([t,id]);
+const S2=11,S3=17,S4=24,END=31;
+tap(1.6,'sv0');tap(3.5,'dc1');tap(4.9,'s2');tap(6.2,'f1');tap(7.5,'f2');tap(9.0,'cbtn');
+tap(S3+2.4,'rbtn');tap(S3+3.6,'st4');tap(S3+5.3,'pub');
+function center(id){const r=$(id).getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]}
 function touch(t){
-  let k=null;
-  for(let i=0;i<TOUCH.length-1;i++){const a=TOUCH[i],b=TOUCH[i+1];
-    if(t>=a[0]&&t<=b[0]&&b[0]-a[0]<1.2){const u=eio(p(t,a[0],b[0]));k=[0,1,2,3,4].map(j=>j?a[j]+(b[j]-a[j])*u:0);break}}
-  const el=$('touch');
-  if(!k){el.style.opacity=0;return}
-  el.style.opacity=k[3];el.style.left=k[1]+'px';el.style.top=k[2]+'px';el.style.transform=`scale(${k[4]})`;
+  const el=$('touch');el.style.opacity=0;
+  for(const [t0,id] of TAPS){
+    if(t<t0-.45||t>t0+.3)continue;
+    const [cx,cy]=center(id);let x,y,o,s=1;
+    if(t<t0-.25){const u=p(t,t0-.45,t0-.25);x=cx+80*(1-u*.4);y=cy+190*(1-u*.4);o=u}
+    else if(t<t0){const u=eio(p(t,t0-.25,t0));x=cx+48*(1-u);y=cy+114*(1-u);o=1}
+    else if(t<t0+.12){x=cx;y=cy;o=1;s=1-.2*p(t,t0,t0+.12)}
+    else{x=cx;y=cy;o=1-p(t,t0+.12,t0+.3);s=.8}
+    el.style.opacity=o;el.style.left=x+'px';el.style.top=y+'px';el.style.transform=`scale(${s})`;return;
+  }
 }
 
-function typing(el,t,a,b,y,x){ // pontinhos
-  const on=t>=a&&t<b;
-  if(!on){el.style.opacity=0;return}
-  const e=eo(p(t,a,a+.2));
-  put(el,e,0,0,.9+.1*e);el.style.top=y+'px';
-  el.querySelectorAll('.dot').forEach((d,i)=>{d.style.transform=`translateY(${-8*Math.max(0,Math.sin((t*6)-i*.8))}px)`});
+function typing(el,t,a,b,y){
+  if(!(t>=a&&t<b)){return false}
+  const e=eo(p(t,a,a+.2));put(el,e,0,0,.9+.1*e);el.style.top=y+'px';
+  el.querySelectorAll('.dot').forEach((d,i)=>{d.style.transform=`translateY(${-8*Math.max(0,Math.sin((t*6)-i*.8))}px)`});return true;
 }
-function pop(el,t,a,fromRight){
-  const e=p(t,a,a+.45);
-  if(e<=0){el.style.opacity=0;return}
-  put(el,cl(e*3),fromRight?30*(1-eo(e)):-30*(1-eo(e)),0,.92+.08*ob(e));
-}
+function pop(el,t,a,fromRight){const e=p(t,a,a+.45);if(e<=0){el.style.opacity=0;return}put(el,cl(e*3),(fromRight?30:-30)*(1-eo(e)),0,.92+.08*ob(e));}
+function typeInto(idT,idP,full,t,a,b){const n=Math.floor(full.length*p(t,a,b));$(idT).textContent=full.slice(0,n);$(idP).style.display=n>0||t>a?'none':'inline'}
 
 function scene1(t){
-  put($('b-head'),eo(p(t,0,.5)),0,30*(1-eo(p(t,0,.5))));
-  put($('b-l1'),eo(p(t,.1,.5)),0,20*(1-eo(p(t,.1,.5))));
-  [0,1,2].forEach(i=>{const e=eo(p(t,.15+i*.12,.65+i*.12));put($('sv'+i),e,0,40*(1-e))});
-  const sel=t>=1.2;
-  const c0=$('sv0');c0.style.outline=sel?'6px solid #50CAE6':'none';c0.style.background=sel?'#EEFAFD':'#fff';
-  // horarios
-  const hh=eo(p(t,1.5,2.1));
-  put($('hours'),hh,0,60*(1-hh));
-  [0,1,2,3,4,5].forEach(i=>{const c=$('h'+i);const on=(i==2&&t>=3.1);c.style.background=on?'#50CAE6':'#DDF4FA'});
-  // botao
-  const bb=eo(p(t,3.5,4.05));put($('btn'),bb,0,70*(1-bb));
-  const press=(t>4.6&&t<4.8)?.96:1;$('btn').style.transform+=` scale(${press})`;
+  // cabecalho e rodape
+  const hd=1-eo(p(t,9.2,9.6));put($('b-head'),eo(p(t,0,.5))*hd,0,24*(1-eo(p(t,0,.5))));
+  put($('foot'),eo(p(t,.2,.7))*hd);
+  const ci=eo(p(t,0,.5));put($('card'),ci,0,30*(1-ci));
+  // progresso
+  const pr=25+50*eo(p(t,2.1,2.6))+25*eo(p(t,5.3,5.8));$('prog').style.width=pr+'%';$('prog').style.opacity=1-p(t,9.2,9.5);
+  // transicao de passos: [entra a,b ; sai c,d]
+  const stp=(el,a,b,c,d)=>{const i=eo(p(t,a,b)),o=eo(p(t,c,d));const v=i*(1-o);el.style.opacity=v;el.style.transform=`translateX(${(1-i)*70-o*70}px)`;el.style.pointerEvents='none';};
+  // A com entrada escalonada
+  const A=$('sA');A.style.opacity=1-eo(p(t,2.1,2.6));A.style.transform=`translateX(${-eo(p(t,2.1,2.6))*70}px)`;
+  [0,1,2].forEach(i=>{const e=eo(p(t,.2+i*.12,.7+i*.12));$('sv'+i).style.opacity=e;$('sv'+i).style.marginTop=(24*(1-e))+'px'});
+  const hov=t>=1.65;const s0=$('sv0');s0.style.borderColor=hov?'#50CAE6':'#F3F4F6';s0.style.background=hov?'#F9FAFB':'#fff';s0.querySelector('.n').style.color=hov?'#50CAE6':'#111827';
+  stp($('sB'),2.1,2.6,5.3,5.8);stp($('sC'),5.3,5.8,9.2,9.6);
+  // dia selecionado
+  const sel=t>=3.55;
+  [0,1,3].forEach(i=>{const el=$('dc'+i);const on=(sel?i==1:i==0);
+    el.style.background=on?'#111827':'#fff';el.style.borderColor=on?'#111827':'#E5E7EB';el.style.color=on?'#fff':'#6B7280';
+    el.querySelector('.w').style.color=on?'rgba(255,255,255,.7)':'#9CA3AF';el.querySelector('.m').style.color=on?'#fff':'#4B5563';
+    el.style.transform=on?'scale(1.05)':'scale(1)';});
+  // horarios: aparecem e recarregam ao trocar o dia
+  const e1=eo(p(t,2.8,3.4)),e2=eo(p(t,3.6,4.1));const sl=$('slots');
+  sl.style.opacity=(t<3.6?e1:.6+.4*e2);sl.style.transform=`translateY(${t<3.6?28*(1-e1):16*(1-e2)}px)`;
+  [0,1,2,3,4,5].forEach(i=>{const el=$('s'+i);const on=(i==2&&t>=4.95);el.style.borderColor=on?'#50CAE6':'#E5E7EB';el.style.background=on?'#F9FAFB':'#fff'});
+  // formulario
+  const f1=t>6.15&&t<7.45,f2=t>7.45;$('f1').style.borderColor=(t>6.15)?'#50CAE6':'#E5E7EB';$('f2').style.borderColor=f2?'#50CAE6':'#E5E7EB';
+  typeInto('t1','p1','Carlos Silva',t,6.4,7.3);typeInto('t2','p2','(11) 98765-4321',t,7.6,8.5);
+  const press=(t>9.0&&t<9.14)?.96:1;$('cbtn').style.transform=`scale(${press})`;$('cbtn').style.opacity=t<8.5?.5:1;
   // sucesso
-  const so=eo(p(t,4.95,5.4));
-  $('ok').style.opacity=so>0?1:0;$('ok').style.transform=`translateY(${(1-so)*100}%)`;
-  const cs=ob(p(t,5.2,5.7));$('okc').style.transform=`scale(${cs})`;
-  $('okp').style.strokeDashoffset=20*(1-eo(p(t,5.45,5.85)));
-  put($('okt'),eo(p(t,5.4,5.85)),0,24*(1-eo(p(t,5.4,5.85))));
+  const so=eo(p(t,9.2,9.7));const D=$('sD');D.style.opacity=so;D.style.transform=`scale(${.92+.08*so})`;
+  $('okc').style.transform=`scale(${ob(p(t,9.4,9.95))})`;
+  put($('okh'),eo(p(t,9.7,10.1)),0,20*(1-eo(p(t,9.7,10.1))));put($('okp'),eo(p(t,9.85,10.25)),0,20*(1-eo(p(t,9.85,10.25))));put($('okb'),eo(p(t,10.0,10.4)),0,20*(1-eo(p(t,10.0,10.4))));
 }
 
-function scene2(t){ // t local desde 6s => aqui recebe t absoluto
-  // um unico indicador de digitacao, reposicionado entre os dois momentos
-  if(t>=6.3&&t<7.1)typing($('ty'),t,6.3,7.1,300);
-  else if(t>=9.5&&t<10.2)typing($('ty'),t,9.5,10.2,730);
-  else $('ty').style.opacity=0;
-  pop($('w1'),t,7.1,false);
-  pop($('w2'),t,8.6,true);
-  $('tk').style.color=t>9.0?'#168CA8':'#9AA5B1';
-  pop($('w3'),t,10.2,false);
+function scene2(t){const u=t-S2;
+  if(typing($('ty'),u,.3,1.1,300)||typing($('ty'),u,3.5,4.2,730)){}else $('ty').style.opacity=0;
+  pop($('w1'),u,1.1,false);pop($('w2'),u,2.6,true);$('tk').style.color=u>3.0?'#1596B3':'#9AA5B1';pop($('w3'),u,4.2,false);
 }
 
-function scene3(t){
-  typing($('ty3'),t,12.3,13.1,300);
-  pop($('r1'),t,13.1,false);
-  const pr=(t>14.6&&t<14.85);$('rbtn').style.background=pr?'#EEF4F7':'transparent';
-  const sh=eo(p(t,14.9,15.5));
-  $('shade').style.opacity=sh;
-  $('sheet').style.transform=`translateY(${(1-sh)*960}px)`;
-  // estrelas
+function scene3(t){const u=t-S3;
+  if(!typing($('ty3'),u,.3,1.1,300))$('ty3').style.opacity=0;
+  pop($('r1'),u,1.1,false);
+  $('rbtn').style.background=(u>2.4&&u<2.65)?'#EEF4F7':'transparent';
+  const sh=eo(p(u,2.7,3.3));$('shade').style.opacity=sh;$('sheet').style.transform=`translateY(${(1-sh)*960}px)`;
   const sd=$('stars');
   if(!sd.dataset.b){sd.dataset.b=1;for(let i=0;i<5;i++){sd.insertAdjacentHTML('beforeend',`<svg class="abs" id="st${i}" style="left:${i*110}px;top:0" width="90" height="90" viewBox="0 0 24 24" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>`)}}
-  for(let i=0;i<5;i++){
-    const e=p(t,15.95+i*.1,16.15+i*.1);
-    const el=$('st'+i);el.style.fill=e>0?'#F5B50A':'#E3E8EE';el.style.stroke=e>0?'#F5B50A':'#E3E8EE';
-    el.style.transform=`scale(${e>0?1+.25*Math.sin(Math.PI*cl(e)):1})`;
-  }
-  // texto
-  const full='Atendimento excelente, saí de lá novo!';
-  const n=Math.floor(full.length*p(t,16.6,17.35));
-  $('typed').textContent=full.slice(0,n);
-  $('caret').style.opacity=(t>16.5&&t<17.4&&Math.floor(t*4)%2==0)?1:0;
-  // publicar
-  const done=t>17.75;
-  $('pub').style.background=done?'#1A1F2B':'#50CAE6';$('pub').style.color=done?'#fff':'#1A1F2B';
-  $('pubt').textContent=done?'Avaliação publicada ✓':'Publicar';
-  const pr2=(t>17.6&&t<17.78)?.96:1;$('pub').style.transform=`scale(${pr2})`;
+  for(let i=0;i<5;i++){const e=p(u,3.65+i*.1,3.85+i*.1);const el=$('st'+i);el.style.fill=e>0?'#F5B50A':'#E3E8EE';el.style.stroke=e>0?'#F5B50A':'#E3E8EE';el.style.transform=`scale(${e>0?1+.25*Math.sin(Math.PI*cl(e)):1})`;}
+  const full='Atendimento excelente, saí de lá novo!';const n=Math.floor(full.length*p(u,4.3,5.0));
+  $('typed').textContent=full.slice(0,n);$('caret').style.opacity=(u>4.2&&u<5.1&&Math.floor(u*4)%2==0)?1:0;
+  const done=u>5.45;$('pub').style.background=done?'#111827':'#50CAE6';$('pubt').textContent=done?'Avaliação publicada ✓':'Publicar';
+  $('pub').style.transform=`scale(${(u>5.3&&u<5.44)?.96:1})`;
 }
 
-function scene4(t){
-  const u=t-18;
-  put($('a-h'),eo(p(u,0,.5)),0,24*(1-eo(p(u,0,.5))));
-  put($('a-c1'),eo(p(u,.1,.6)),0,30*(1-eo(p(u,.1,.6))));
-  put($('a-c2'),eo(p(u,.2,.7)),0,30*(1-eo(p(u,.2,.7))));
-  put($('a-l'),eo(p(u,.3,.7)));
-  const slot=i=>500+i*166;
-  const sh=eo(p(u,2.6,3.2));
-  [['ra',0,0],['rb',1,1],['rc',2,3],['rd',3,4]].forEach(([id,a,b],k)=>{
-    const e=eo(p(u,.4+k*.12,.9+k*.12));const base=(a+(b-a)*sh);
-    const el=$(id);el.style.top=slot(base)+'px';put(el,e,0,40*(1-e));
-  });
-  // novo
-  const n=p(u,2.6,3.3);
-  const rn=$('rn');rn.style.top=slot(2)+'px';
-  put(rn,cl(n*2.5),0,0,.9+.1*ob(n));
-  const flash=n>0&&u<4.2;rn.style.background=(u>2.6&&u<4.4)?'#DDF4FA':'#fff';
-  $('newb').style.opacity=(u>2.8&&u<4.6)?1:0;
-  // contadores
-  const c=eo(p(u,3.0,3.7));
-  $('cnt1').textContent=Math.round(8+1*c);
-  $('cnt2').textContent='R$ '+Math.round(420+45*c);
-  const bump=(u>3.0&&u<3.9)?1+.06*Math.sin(Math.PI*p(u,3.0,3.9)):1;
-  $('a-c1').style.transform+=` scale(${bump})`;$('a-c2').style.transform+=` scale(${bump})`;
-  // confirmado: troca "Novo" por check
-  if(!rn.dataset.ck){rn.dataset.ck=1;rn.insertAdjacentHTML('beforeend','<div class="ck" id="rnck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div>')}
-  $('rnck').style.opacity=u>4.6?eo(p(u,4.6,5.0)):0;
-  $('rnck').style.transform=`scale(${.6+.4*ob(p(u,4.6,5.1))})`;
+function scene4(t){const u=t-S4;
+  put($('d-h'),eo(p(u,0,.5)),0,24*(1-eo(p(u,0,.5))));
+  put($('d-next'),eo(p(u,.1,.7)),0,40*(1-eo(p(u,.1,.7))));
+  put($('d-stats'),eo(p(u,.3,.9)),0,40*(1-eo(p(u,.3,.9))));
+  put($('d-l'),eo(p(u,.5,.9)));
+  const slot=i=>916+i*146;const sh=eo(p(u,2.8,3.4));
+  [['ra',0,0],['rb',1,1],['rc',2,3],['rd',3,4]].forEach(([id,a,b],k)=>{const e=eo(p(u,.6+k*.12,1.1+k*.12));const el=$(id);el.style.top=slot(a+(b-a)*sh)+'px';put(el,e,0,40*(1-e));});
+  const n=p(u,2.8,3.5),rn=$('rn');rn.style.top=slot(2)+'px';put(rn,cl(n*2.5),0,0,.9+.1*ob(n));
+  rn.style.background=(u>2.8&&u<4.6)?'#E8F8FC':'#fff';
+  $('newb').style.display=(u>3.0&&u<4.9)?'block':'none';
+  const c=eo(p(u,3.3,4.0));$('cnt1').textContent=Math.round(8+c);$('cnt2').textContent='R$ '+Math.round(420+45*c);
+  const bump=(u>3.3&&u<4.2)?1+.05*Math.sin(Math.PI*p(u,3.3,4.2)):1;$('st1').style.transform=`scale(${bump})`;$('st2').style.transform=`scale(${bump})`;
+  const ck=$('rnck');ck.style.opacity=u>4.9?eo(p(u,4.9,5.3)):0;ck.style.transform=`scale(${.6+.4*ob(p(u,4.9,5.4))})`;
 }
 
 function render(t){
-  show('L1',t<6);show('L2',t>=6&&t<12);show('L3',t>=12&&t<18);show('L4',t>=18);
-  if(t<6)scene1(t);else if(t<12)scene2(t);else if(t<18)scene3(t);else scene4(t);
+  show('L1',t<S2);show('L2',t>=S2&&t<S3);show('L3',t>=S3&&t<S4);show('L4',t>=S4);
+  if(t<S2)scene1(t);else if(t<S3)scene2(t);else if(t<S4)scene3(t);else scene4(t);
   touch(t);
 }
 render(0);
