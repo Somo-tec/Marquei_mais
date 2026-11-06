@@ -8,6 +8,7 @@ use App\Services\OrgContext;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class FinancialController extends Controller
 {
@@ -67,8 +68,8 @@ class FinancialController extends Controller
             'payment_method'   => 'required|in:cash,card,pix,transfer,other',
             'amount'           => 'required|numeric|min:0.01',
             'description'      => 'required|string',
-            'appointment_id'   => 'nullable|uuid',
-            'professional_id'  => 'nullable|uuid',
+            'appointment_id'   => ['nullable', 'uuid', Rule::exists('appointments', 'id')->where('organization_id', OrgContext::org()->id)],
+            'professional_id'  => ['nullable', 'uuid', Rule::exists('professionals', 'id')->where('organization_id', OrgContext::org()->id)],
         ]);
 
         $entry = CashEntry::create([

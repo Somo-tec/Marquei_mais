@@ -6,6 +6,12 @@ use Carbon\Carbon;
 
 class AppointmentService
 {
+    /** Duracao maxima de um agendamento, em minutos. Limita a janela de busca de conflitos. */
+    public const MAX_DURATION_MINUTES = 1440;
+
+    /** Status que nao ocupam horario na agenda. */
+    public const NON_BLOCKING_STATUSES = ['cancelled'];
+
     public function getAvailableSlots(Professional $professional, string $date, int $durationMinutes): array
     {
         $workingHours = $professional->working_hours ?? [];
@@ -24,11 +30,7 @@ class AppointmentService
             ? Carbon::parse("{$date} " . $daySchedule['lunchEnd'])
             : null;
 
-        $booked = Appointment::where('professional_id', $professional->id)
-            ->whereDate('starts_at', $date)
-            ->whereNotIn('status', ['cancelled'])
-            ->get()
-            ->map(fn ($a) => [$a->starts_at, $a->endsAt()]);
+        $booked = $this->blockingAppointments($professional->id, $start, $end);
 
         $slots = [];
         $cursor = $start->copy();
@@ -38,16 +40,15 @@ class AppointmentService
 
             // Skip lunch break
             if ($lunchStart && $lunchEnd) {
-                if ($cursor->lt($lunchEnd) && $slotEnd->gt($lunchStart)) {
+                if ($this->overlaps($cursor, $slotEnd, $lunchStart, $lunchEnd)) {
                     $cursor = $lunchEnd->copy();
                     continue;
                 }
             }
 
-            // Check conflicts
-            $hasConflict = $booked->contains(function ($b) use ($cursor, $slotEnd) {
-                return $cursor->lt($b[1]) && $slotEnd->gt($b[0]);
-            });
+            $hasConflict = $booked->contains(
+                fn (Appointment $a) => $this->overlaps($cursor, $slotEnd, $a->starts_at, $a->endsAt())
+            );
 
             if (!$hasConflict) {
                 $slots[] = $cursor->format('H:i');
@@ -63,11 +64,26 @@ class AppointmentService
     {
         $endsAt = $startsAt->copy()->addMinutes($duration);
 
+        return $this->blockingAppointments($professionalId, $startsAt, $endsAt, $excludeId)
+            ->contains(fn (Appointment $a) => $this->overlaps($startsAt, $endsAt, $a->starts_at, $a->endsAt()));
+    }
+
+    /**
+     * Agendamentos do profissional que podem colidir com o intervalo [$from, $to).
+     * A query e portavel entre bancos: o calculo do fim fica em PHP.
+     */
+    private function blockingAppointments(string $professionalId, Carbon $from, Carbon $to, ?string $excludeId = null)
+    {
         return Appointment::where('professional_id', $professionalId)
-            ->whereNotIn('status', ['cancelled'])
+            ->whereNotIn('status', self::NON_BLOCKING_STATUSES)
             ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
-            ->where('starts_at', '<', $endsAt)
-            ->whereRaw("datetime(starts_at, '+' || duration_minutes || ' minutes') > ?", [$startsAt])
-            ->exists();
+            ->where('starts_at', '<', $to)
+            ->where('starts_at', '>', $from->copy()->subMinutes(self::MAX_DURATION_MINUTES))
+            ->get();
+    }
+
+    private function overlaps(Carbon $startA, Carbon $endA, Carbon $startB, Carbon $endB): bool
+    {
+        return $startA->lt($endB) && $endA->gt($startB);
     }
 }

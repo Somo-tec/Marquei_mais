@@ -8,7 +8,9 @@ use App\Services\AppointmentService;
 use App\Services\OrgContext;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AppointmentsController extends Controller
 {
@@ -33,17 +35,17 @@ class AppointmentsController extends Controller
     {
         $org = OrgContext::org();
         $data = $request->validate([
-            'client_id'       => 'required|uuid',
-            'service_id'      => 'required|uuid',
-            'professional_id' => 'required|uuid',
+            'client_id'       => ['required', 'uuid', $this->belongsToOrg('clients')],
+            'service_id'      => ['required', 'uuid', $this->belongsToOrg('services')],
+            'professional_id' => ['required', 'uuid', $this->belongsToOrg('professionals')],
             'starts_at'       => 'required|date',
-            'duration_minutes'=> 'required|integer|min:5',
+            'duration_minutes'=> 'required|integer|min:5|max:' . AppointmentService::MAX_DURATION_MINUTES,
             'price'           => 'required|numeric|min:0',
             'notes'           => 'nullable|string',
             'source'          => 'nullable|string',
         ]);
 
-        $startsAt = Carbon::parse($data['starts_at']);
+        $startsAt = $this->parseDate($data['starts_at']);
 
         if ($this->svc->hasConflict($data['professional_id'], $startsAt, $data['duration_minutes'])) {
             return response()->json(['error' => 'Conflito de horário para este profissional'], 422);
@@ -83,34 +85,56 @@ class AppointmentsController extends Controller
         $apt = Appointment::where('organization_id', OrgContext::org()->id)->findOrFail($id);
         $data = $request->validate([
             'starts_at'        => 'sometimes|date',
-            'duration_minutes' => 'sometimes|integer|min:5',
+            'duration_minutes' => 'sometimes|integer|min:5|max:' . AppointmentService::MAX_DURATION_MINUTES,
             'price'            => 'sometimes|numeric|min:0',
             'status'           => 'sometimes|in:pending,confirmed,cancelled,completed,no_show',
             'notes'            => 'nullable|string',
             'cancelled_reason' => 'nullable|string',
-            'professional_id'  => 'sometimes|uuid',
+            'professional_id'  => ['sometimes', 'uuid', $this->belongsToOrg('professionals')],
         ]);
 
         if (isset($data['starts_at'])) {
-            $startsAt = Carbon::parse($data['starts_at']);
-            $duration = $data['duration_minutes'] ?? $apt->duration_minutes;
-            $profId   = $data['professional_id'] ?? $apt->professional_id;
-
-            if ($this->svc->hasConflict($profId, $startsAt, $duration, $apt->id)) {
-                return response()->json(['error' => 'Conflito de horário'], 422);
-            }
-            $data['starts_at'] = $startsAt;
+            $data['starts_at'] = $this->parseDate($data['starts_at']);
         }
 
-        $apt->update($data);
+        $oldStatus = $apt->status;
+        $newStatus = $data['status'] ?? $oldStatus;
+        $startsAt  = $data['starts_at'] ?? $apt->starts_at;
+        $duration  = $data['duration_minutes'] ?? $apt->duration_minutes;
+        $profId    = $data['professional_id'] ?? $apt->professional_id;
 
-        // Update client stats on completion
-        if (($data['status'] ?? null) === 'completed') {
+        // Revalida conflito sempre que o horario ocupado muda: novo inicio, nova duracao,
+        // outro profissional, ou um agendamento cancelado voltando a ocupar a agenda.
+        $slotChanged = isset($data['starts_at'])
+            || (isset($data['duration_minutes']) && (int) $data['duration_minutes'] !== (int) $apt->duration_minutes)
+            || (isset($data['professional_id']) && $data['professional_id'] !== $apt->professional_id)
+            || (in_array($oldStatus, AppointmentService::NON_BLOCKING_STATUSES)
+                && !in_array($newStatus, AppointmentService::NON_BLOCKING_STATUSES));
+
+        $willBlock = !in_array($newStatus, AppointmentService::NON_BLOCKING_STATUSES);
+
+        if ($slotChanged && $willBlock && $this->svc->hasConflict($profId, $startsAt, $duration, $apt->id)) {
+            return response()->json(['error' => 'Conflito de horário para este profissional'], 422);
+        }
+
+        $oldPrice = $apt->price;
+
+        DB::transaction(function () use ($apt, $data, $oldStatus, $newStatus, $oldPrice) {
+            $apt->update($data);
+
+            // Estatisticas do cliente acompanham a transicao de status, sem contar em dobro.
             $client = $apt->client;
-            $client->increment('total_appointments');
-            $client->increment('total_spent', $apt->price);
-            $client->update(['last_visit_at' => now()]);
-        }
+            if ($newStatus === 'completed' && $oldStatus !== 'completed') {
+                $client->increment('total_appointments');
+                $client->increment('total_spent', $apt->price);
+                $client->update(['last_visit_at' => now()]);
+            } elseif ($oldStatus === 'completed' && $newStatus !== 'completed') {
+                $client->update([
+                    'total_appointments' => max(0, $client->total_appointments - 1),
+                    'total_spent'        => max(0, $client->total_spent - $oldPrice),
+                ]);
+            }
+        });
 
         return response()->json($apt->fresh(['client','service','professional']));
     }
@@ -135,5 +159,17 @@ class AppointmentsController extends Controller
 
         $slots = $this->svc->getAvailableSlots($professional, $request->date, $request->duration_minutes);
         return response()->json(['slots' => $slots]);
+    }
+
+    /** Regra de validacao: o registro existe e pertence a organizacao atual. */
+    private function belongsToOrg(string $table)
+    {
+        return Rule::exists($table, 'id')->where('organization_id', OrgContext::org()->id);
+    }
+
+    /** Normaliza a data recebida (ISO com qualquer offset) para o fuso da aplicacao. */
+    private function parseDate(string $value): Carbon
+    {
+        return Carbon::parse($value)->setTimezone(config('app.timezone'));
     }
 }
