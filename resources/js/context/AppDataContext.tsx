@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo, useEf
 import { startOfToday, addHours, addDays, subDays, isSameDay, isBefore, isAfter, setHours, setMinutes, format } from "date-fns";
 import { api, hasToken } from "@/lib/api";
 import { getDemoProfile } from "@/context/DemoProfiles";
+import { toast } from "sonner";
 
 // ============================
 // TYPES
@@ -761,7 +762,12 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
       if (data.price !== undefined) payload.price = data.price;
       if (data.status !== undefined) payload.status = APPOINTMENT_STATUS_TO_API[data.status] ?? data.status;
       if (data.professionalId !== undefined) payload.professional_id = data.professionalId;
-      api.appointments.update(id, payload).catch(err => console.error("updateAppointment failed:", err));
+      api.appointments.update(id, payload).catch(err => {
+        console.error("updateAppointment failed:", err);
+        // O backend recusou (ex.: conflito de horario): desfaz a mudanca otimista.
+        if (old) setAppointments(prev => prev.map(a => a.id === id ? old : a));
+        toast.error(err instanceof Error && err.message ? err.message : "Não foi possível salvar a alteração do agendamento.");
+      });
     }
   }, [pushNotification]);
 
