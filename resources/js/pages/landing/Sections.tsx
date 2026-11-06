@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Plus, Scissors, Sparkles, Heart, Flower2 } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { PhoneFrame } from "./PhoneFrame";
-import { AgendaMock, BookingMock, ReviewMock, WhatsAppMock } from "./mocks";
+import { PhoneVideo } from "./PhoneVideo";
 import { BLUE, BLUE_50, BLUE_100, NAVY, PAPER, MUTED, SHOW_TESTIMONIALS } from "./tokens";
 
 const label = "text-[11px] font-semibold uppercase tracking-[0.14em]";
@@ -82,14 +82,14 @@ export function Features() {
         kicker="Cardápio virtual"
         title="Seus serviços e horários num link só"
         text="O cliente vê o que você faz, quanto custa e quando tem vaga. Escolhe o horário e pronto. Você nem precisa parar o que está fazendo."
-        mock={<BookingMock />}
+        mock={<PhoneVideo name="agendar" />}
         bg="#FFFFFF"
       />
       <Feature
         kicker="WhatsApp"
         title="Confirmação automática no WhatsApp do cliente"
         text="Agendou, o Marquei avisa. Antes do horário, manda o lembrete. Menos falta, menos remarcação, zero mensagem digitada por você."
-        mock={<WhatsAppMock />}
+        mock={<PhoneVideo name="whatsapp" />}
         bg={BLUE}
         solid
         flip
@@ -98,14 +98,14 @@ export function Features() {
         kicker="Avaliações"
         title="Cliente satisfeito vira nota 5 no Google"
         text="Depois do serviço, uma mensagem automática pede a avaliação e leva o cliente direto para a página da sua empresa no Google."
-        mock={<ReviewMock />}
+        mock={<PhoneVideo name="avaliacao" />}
         bg={BLUE_100}
       />
       <Feature
         kicker="Agenda"
         title="Seu dia organizado, sem buraco"
         text="Veja o que vem pela frente, quem já confirmou e quanto vai entrar. O fluxo fica leve para você focar em fazer o melhor serviço possível."
-        mock={<AgendaMock />}
+        mock={<PhoneVideo name="agenda" />}
         bg="#FFFFFF"
         flip
       />

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Reveal } from "./Reveal";
 import { PhoneFrame } from "./PhoneFrame";
-import { BookingMock } from "./mocks";
+import { PhoneVideo } from "./PhoneVideo";
 import { BLUE, BLUE_100, BLUE_200, NAVY, PAPER, MUTED } from "./tokens";
 
 interface HeroProps {
@@ -61,7 +61,7 @@ export function Hero({ onSignup }: HeroProps) {
         <motion.div style={{ y: phoneY }} className="-mb-24 sm:-mb-40">
           <Reveal delay={0.4} y={80}>
             <PhoneFrame className="w-[240px] sm:w-[320px]">
-              <BookingMock />
+              <PhoneVideo name="agendar" />
             </PhoneFrame>
           </Reveal>
         </motion.div>

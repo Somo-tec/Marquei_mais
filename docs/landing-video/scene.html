@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<style>
+:root{--blue:#50CAE6;--b50:#EEFAFD;--b100:#DDF4FA;--b200:#BDEBF6;--navy:#1A1F2B;--paper:#F6F9FA;--muted:#5B6676;--gold:#F5B50A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:720px;height:1480px;overflow:hidden;background:var(--paper);font-family:"Segoe UI",system-ui,sans-serif;color:var(--navy)}
+#stage{position:relative;width:720px;height:1480px;overflow:hidden}
+.layer{position:absolute;inset:0;display:none}
+.abs{position:absolute}
+.card{position:absolute;left:40px;width:640px;height:120px;background:#fff;border-radius:32px;padding:0 36px;display:flex;align-items:center;justify-content:space-between}
+.card b{font-size:34px;font-weight:700}.card small{display:block;font-size:26px;color:var(--muted);margin-top:4px}
+.chip{position:absolute;width:200px;height:84px;border-radius:24px;background:var(--b100);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700}
+.bubble{position:absolute;border-radius:28px;padding:24px 28px;font-size:30px;line-height:1.32;background:#fff;color:var(--navy);width:540px}
+.bubble.l{left:32px;border-top-left-radius:8px}
+.bubble.r{right:32px;border-top-right-radius:8px;background:var(--b200);width:auto}
+.bubble b{font-weight:700}
+.time{font-size:20px;color:var(--muted);text-align:right;margin-top:6px}
+.bar{position:absolute;left:0;top:0;width:720px;height:250px;background:var(--navy);color:#fff}
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#9AA5B1;margin:0 6px}
+#touch{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;background:rgba(26,31,43,.22);border:5px solid rgba(26,31,43,.45);opacity:0;z-index:50;pointer-events:none}
+.row{position:absolute;left:40px;width:640px;height:150px;background:#fff;border-radius:32px;display:flex;align-items:center;padding:0 28px;gap:24px}
+.tbox{width:96px;height:96px;border-radius:24px;background:var(--b50);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;flex:none}
+.row .n{font-size:34px;font-weight:700}.row .s{font-size:26px;color:var(--muted);margin-top:2px}
+.ck{margin-left:auto;width:48px;height:48px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center}
+</style></head><body>
+<div id="stage">
+
+<!-- Trecho 1: pagina de agendamento -->
+<div class="layer" id="L1" style="background:var(--paper)">
+  <div class="abs" id="b-head" style="left:40px;top:130px;display:flex;align-items:center;gap:24px">
+    <div style="width:96px;height:96px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>
+    </div>
+    <div><div style="font-size:42px;font-weight:700">Barbearia do Léo</div><div style="font-size:28px;color:var(--muted)">Agende seu horário</div></div>
+  </div>
+  <div class="abs" id="b-l1" style="left:40px;top:290px;font-size:32px;font-weight:700">Serviços</div>
+  <div class="card" id="sv0" style="top:350px"><div><b>Corte masculino</b><small>40 min</small></div><b>R$ 45</b></div>
+  <div class="card" id="sv1" style="top:490px"><div><b>Barba</b><small>30 min</small></div><b>R$ 30</b></div>
+  <div class="card" id="sv2" style="top:630px"><div><b>Corte + barba</b><small>1h 10</small></div><b>R$ 65</b></div>
+  <div id="hours">
+    <div class="abs" style="left:40px;top:818px;font-size:32px;font-weight:700">Horários livres · sexta</div>
+    <div class="chip" id="h0" style="left:40px;top:880px">09:00</div>
+    <div class="chip" id="h1" style="left:260px;top:880px">09:40</div>
+    <div class="chip" id="h2" style="left:480px;top:880px">10:20</div>
+    <div class="chip" id="h3" style="left:40px;top:984px">11:00</div>
+    <div class="chip" id="h4" style="left:260px;top:984px">14:00</div>
+    <div class="chip" id="h5" style="left:480px;top:984px">14:40</div>
+  </div>
+  <div class="abs" id="btn" style="left:40px;top:1120px;width:640px;height:110px;border-radius:55px;background:var(--navy);color:#fff;font-size:36px;font-weight:700;display:flex;align-items:center;justify-content:center">Confirmar horário</div>
+  <div class="abs" id="ok" style="inset:0;background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">
+    <div id="okc" style="width:240px;height:240px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center">
+      <svg width="130" height="130" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path id="okp" d="M5 12.5 10 17.5 19 7.5" stroke-dasharray="20" stroke-dashoffset="20"/></svg>
+    </div>
+    <div id="okt" style="text-align:center"><div style="font-size:54px;font-weight:700;color:#fff">Horário confirmado</div><div style="font-size:32px;margin-top:10px">Sexta, 10:20 · Corte masculino</div></div>
+  </div>
+</div>
+
+<!-- Chat: confirmacao + lembrete (trecho 2) -->
+<div class="layer" id="L2" style="background:#EFEAE2">
+  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <div style="width:84px;height:84px;border-radius:50%;background:var(--blue);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700">M</div>
+    <div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
+  <div class="bubble l" id="w1" style="top:300px"><div style="font-weight:700;margin-bottom:6px">Agendamento confirmado ✅</div>Oi, Carlos! Seu corte está marcado para <b>sexta, 10:20</b>. Te esperamos!<div class="time">09:12</div></div>
+  <div class="bubble r" id="w2" style="top:570px"><span>Perfeito, obrigado!</span><div class="time">09:13 <span id="tk">✓✓</span></div></div>
+  <div class="bubble l" id="w3" style="top:730px"><div style="font-weight:700;margin-bottom:6px">Lembrete 🔔</div>Amanhã às <b>10:20</b>. Precisa remarcar? É só responder aqui.<div class="time">19:00</div></div>
+  <div class="bubble l" id="ty" style="width:150px;padding:28px 18px;text-align:center"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<!-- Chat: avaliacao (trecho 3) -->
+<div class="layer" id="L3" style="background:#EFEAE2">
+  <div class="bar"><div class="abs" style="left:36px;top:128px;display:flex;align-items:center;gap:24px">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+    <div style="width:84px;height:84px;border-radius:50%;background:var(--blue);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700">M</div>
+    <div><div style="font-size:36px;font-weight:700">Barbearia do Léo</div><div style="font-size:24px;color:#9AA5B1">conta comercial</div></div></div></div>
+  <div class="bubble l" id="r1" style="top:300px;padding-bottom:0;overflow:hidden"><div style="font-weight:700;margin-bottom:6px">Como foi seu corte? ✂️</div>Obrigado pela visita, Carlos! Sua opinião ajuda muito a gente.<div class="time" style="margin-bottom:14px">11:05</div>
+    <div id="rbtn" style="margin:0 -28px;padding:26px;text-align:center;font-weight:700;font-size:32px;border-top:2px solid #E6EBF0;color:#168CA8">Avaliar no Google</div></div>
+  <div class="bubble l" id="ty3" style="width:150px;padding:28px 18px;text-align:center;top:300px"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  <div class="abs" id="shade" style="inset:0;background:rgba(26,31,43,.45)"></div>
+  <div class="abs" id="sheet" style="left:0;top:520px;width:720px;height:960px;background:#fff;border-radius:56px 56px 0 0;padding:44px 40px">
+    <div style="width:90px;height:10px;border-radius:5px;background:#D5DCE3;margin:0 auto 40px"></div>
+    <div style="display:flex;align-items:center;gap:22px"><div style="width:80px;height:80px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:700">M</div><div style="font-size:38px;font-weight:700">Avaliar Barbearia do Léo</div></div>
+    <div class="abs" id="stars" style="left:95px;top:240px;width:530px;height:90px"></div>
+    <div class="abs" id="field" style="left:40px;top:400px;width:640px;height:300px;border-radius:32px;background:var(--paper);padding:32px;font-size:34px;line-height:1.35"><span id="typed"></span><span id="caret">|</span></div>
+    <div class="abs" id="pub" style="left:40px;top:760px;width:640px;height:110px;border-radius:55px;background:var(--blue);color:var(--navy);font-size:36px;font-weight:700;display:flex;align-items:center;justify-content:center"><span id="pubt">Publicar</span></div>
+  </div>
+</div>
+
+<!-- Agenda (trecho 4) -->
+<div class="layer" id="L4" style="background:var(--paper)">
+  <div class="abs" id="a-h" style="left:40px;top:130px;font-size:56px;font-weight:700">Hoje, sexta</div>
+  <div class="abs" id="a-c1" style="left:40px;top:250px;width:310px;height:170px;border-radius:32px;background:#fff;padding:28px"><div style="font-size:26px;color:var(--muted)">Agendamentos</div><div id="cnt1" style="font-size:64px;font-weight:700;margin-top:6px">8</div></div>
+  <div class="abs" id="a-c2" style="left:370px;top:250px;width:310px;height:170px;border-radius:32px;background:var(--blue);padding:28px"><div style="font-size:26px">Faturamento</div><div id="cnt2" style="font-size:64px;font-weight:700;margin-top:6px">R$ 420</div></div>
+  <div class="abs" id="a-l" style="left:40px;top:455px;font-size:34px;font-weight:700">Próximos</div>
+  <div class="row" id="ra"><div class="tbox">09:00</div><div><div class="n">Pedro Alves</div><div class="s">Barba</div></div><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div></div>
+  <div class="row" id="rb"><div class="tbox">09:40</div><div><div class="n">Rafael Costa</div><div class="s">Corte + barba</div></div><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div></div>
+  <div class="row" id="rn"><div class="tbox" style="background:var(--b200)">10:20</div><div><div class="n">Carlos Silva</div><div class="s">Corte masculino</div></div><div class="abs" id="newb" style="right:28px;top:50px;padding:10px 22px;border-radius:30px;background:var(--blue);font-size:24px;font-weight:700">Novo</div></div>
+  <div class="row" id="rc"><div class="tbox">11:30</div><div><div class="n">Bruno Lima</div><div class="s">Corte masculino</div></div></div>
+  <div class="row" id="rd"><div class="tbox">14:00</div><div><div class="n">Diego Souza</div><div class="s">Barba</div></div></div>
+</div>
+
+<div id="touch"></div>
+</div>
+<script>
+const cl=x=>Math.min(1,Math.max(0,x)), p=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const ob=x=>{const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const $=id=>document.getElementById(id);
+function put(el,o,x=0,y=0,s=1){el.style.opacity=o;el.style.transform=`translate(${x}px,${y}px) scale(${s})`;}
+function show(id,on){$(id).style.display=on?'block':'none'}
+
+// Trilha unica do toque: [t,x,y,opacidade,escala]
+const TOUCH=[
+ [.6,560,1100,0,1],[.8,540,900,1,1],[1.1,360,385,1,1],[1.25,360,385,1,.8],[1.45,360,385,0,1],
+ [2.3,520,1100,0,1],[2.5,500,1000,1,1],[3.0,580,892,1,1],[3.15,580,892,1,.8],[3.35,580,892,0,1],
+ [4.0,520,1300,0,1],[4.2,500,1250,1,1],[4.6,360,1175,1,1],[4.75,360,1175,1,.8],[4.95,360,1175,0,1],
+ [14.0,520,1300,0,1],[14.2,500,1100,1,1],[14.6,360,690,1,1],[14.72,360,690,1,.8],[14.9,360,690,0,1],
+ [15.3,520,1250,0,1],[15.5,520,1050,1,1],[15.9,580,850,1,1],[16.0,580,850,1,.8],[16.2,580,850,0,1],
+ [17.2,520,1350,0,1],[17.35,480,1350,1,1],[17.6,360,1330,1,1],[17.72,360,1330,1,.8],[17.9,360,1330,0,1]
+];
+function touch(t){
+  let k=null;
+  for(let i=0;i<TOUCH.length-1;i++){const a=TOUCH[i],b=TOUCH[i+1];
+    if(t>=a[0]&&t<=b[0]&&b[0]-a[0]<1.2){const u=eio(p(t,a[0],b[0]));k=[0,1,2,3,4].map(j=>j?a[j]+(b[j]-a[j])*u:0);break}}
+  const el=$('touch');
+  if(!k){el.style.opacity=0;return}
+  el.style.opacity=k[3];el.style.left=k[1]+'px';el.style.top=k[2]+'px';el.style.transform=`scale(${k[4]})`;
+}
+
+function typing(el,t,a,b,y,x){ // pontinhos
+  const on=t>=a&&t<b;
+  if(!on){el.style.opacity=0;return}
+  const e=eo(p(t,a,a+.2));
+  put(el,e,0,0,.9+.1*e);el.style.top=y+'px';
+  el.querySelectorAll('.dot').forEach((d,i)=>{d.style.transform=`translateY(${-8*Math.max(0,Math.sin((t*6)-i*.8))}px)`});
+}
+function pop(el,t,a,fromRight){
+  const e=p(t,a,a+.45);
+  if(e<=0){el.style.opacity=0;return}
+  put(el,cl(e*3),fromRight?30*(1-eo(e)):-30*(1-eo(e)),0,.92+.08*ob(e));
+}
+
+function scene1(t){
+  put($('b-head'),eo(p(t,0,.5)),0,30*(1-eo(p(t,0,.5))));
+  put($('b-l1'),eo(p(t,.1,.5)),0,20*(1-eo(p(t,.1,.5))));
+  [0,1,2].forEach(i=>{const e=eo(p(t,.15+i*.12,.65+i*.12));put($('sv'+i),e,0,40*(1-e))});
+  const sel=t>=1.2;
+  const c0=$('sv0');c0.style.outline=sel?'6px solid #50CAE6':'none';c0.style.background=sel?'#EEFAFD':'#fff';
+  // horarios
+  const hh=eo(p(t,1.5,2.1));
+  put($('hours'),hh,0,60*(1-hh));
+  [0,1,2,3,4,5].forEach(i=>{const c=$('h'+i);const on=(i==2&&t>=3.1);c.style.background=on?'#50CAE6':'#DDF4FA'});
+  // botao
+  const bb=eo(p(t,3.5,4.05));put($('btn'),bb,0,70*(1-bb));
+  const press=(t>4.6&&t<4.8)?.96:1;$('btn').style.transform+=` scale(${press})`;
+  // sucesso
+  const so=eo(p(t,4.95,5.4));
+  $('ok').style.opacity=so>0?1:0;$('ok').style.transform=`translateY(${(1-so)*100}%)`;
+  const cs=ob(p(t,5.2,5.7));$('okc').style.transform=`scale(${cs})`;
+  $('okp').style.strokeDashoffset=20*(1-eo(p(t,5.45,5.85)));
+  put($('okt'),eo(p(t,5.4,5.85)),0,24*(1-eo(p(t,5.4,5.85))));
+}
+
+function scene2(t){ // t local desde 6s => aqui recebe t absoluto
+  // um unico indicador de digitacao, reposicionado entre os dois momentos
+  if(t>=6.3&&t<7.1)typing($('ty'),t,6.3,7.1,300);
+  else if(t>=9.5&&t<10.2)typing($('ty'),t,9.5,10.2,730);
+  else $('ty').style.opacity=0;
+  pop($('w1'),t,7.1,false);
+  pop($('w2'),t,8.6,true);
+  $('tk').style.color=t>9.0?'#168CA8':'#9AA5B1';
+  pop($('w3'),t,10.2,false);
+}
+
+function scene3(t){
+  typing($('ty3'),t,12.3,13.1,300);
+  pop($('r1'),t,13.1,false);
+  const pr=(t>14.6&&t<14.85);$('rbtn').style.background=pr?'#EEF4F7':'transparent';
+  const sh=eo(p(t,14.9,15.5));
+  $('shade').style.opacity=sh;
+  $('sheet').style.transform=`translateY(${(1-sh)*960}px)`;
+  // estrelas
+  const sd=$('stars');
+  if(!sd.dataset.b){sd.dataset.b=1;for(let i=0;i<5;i++){sd.insertAdjacentHTML('beforeend',`<svg class="abs" id="st${i}" style="left:${i*110}px;top:0" width="90" height="90" viewBox="0 0 24 24" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>`)}}
+  for(let i=0;i<5;i++){
+    const e=p(t,15.95+i*.1,16.15+i*.1);
+    const el=$('st'+i);el.style.fill=e>0?'#F5B50A':'#E3E8EE';el.style.stroke=e>0?'#F5B50A':'#E3E8EE';
+    el.style.transform=`scale(${e>0?1+.25*Math.sin(Math.PI*cl(e)):1})`;
+  }
+  // texto
+  const full='Atendimento excelente, saí de lá novo!';
+  const n=Math.floor(full.length*p(t,16.6,17.35));
+  $('typed').textContent=full.slice(0,n);
+  $('caret').style.opacity=(t>16.5&&t<17.4&&Math.floor(t*4)%2==0)?1:0;
+  // publicar
+  const done=t>17.75;
+  $('pub').style.background=done?'#1A1F2B':'#50CAE6';$('pub').style.color=done?'#fff':'#1A1F2B';
+  $('pubt').textContent=done?'Avaliação publicada ✓':'Publicar';
+  const pr2=(t>17.6&&t<17.78)?.96:1;$('pub').style.transform=`scale(${pr2})`;
+}
+
+function scene4(t){
+  const u=t-18;
+  put($('a-h'),eo(p(u,0,.5)),0,24*(1-eo(p(u,0,.5))));
+  put($('a-c1'),eo(p(u,.1,.6)),0,30*(1-eo(p(u,.1,.6))));
+  put($('a-c2'),eo(p(u,.2,.7)),0,30*(1-eo(p(u,.2,.7))));
+  put($('a-l'),eo(p(u,.3,.7)));
+  const slot=i=>500+i*166;
+  const sh=eo(p(u,2.6,3.2));
+  [['ra',0,0],['rb',1,1],['rc',2,3],['rd',3,4]].forEach(([id,a,b],k)=>{
+    const e=eo(p(u,.4+k*.12,.9+k*.12));const base=(a+(b-a)*sh);
+    const el=$(id);el.style.top=slot(base)+'px';put(el,e,0,40*(1-e));
+  });
+  // novo
+  const n=p(u,2.6,3.3);
+  const rn=$('rn');rn.style.top=slot(2)+'px';
+  put(rn,cl(n*2.5),0,0,.9+.1*ob(n));
+  const flash=n>0&&u<4.2;rn.style.background=(u>2.6&&u<4.4)?'#DDF4FA':'#fff';
+  $('newb').style.opacity=(u>2.8&&u<4.6)?1:0;
+  // contadores
+  const c=eo(p(u,3.0,3.7));
+  $('cnt1').textContent=Math.round(8+1*c);
+  $('cnt2').textContent='R$ '+Math.round(420+45*c);
+  const bump=(u>3.0&&u<3.9)?1+.06*Math.sin(Math.PI*p(u,3.0,3.9)):1;
+  $('a-c1').style.transform+=` scale(${bump})`;$('a-c2').style.transform+=` scale(${bump})`;
+  // confirmado: troca "Novo" por check
+  if(!rn.dataset.ck){rn.dataset.ck=1;rn.insertAdjacentHTML('beforeend','<div class="ck" id="rnck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1A1F2B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7.5"/></svg></div>')}
+  $('rnck').style.opacity=u>4.6?eo(p(u,4.6,5.0)):0;
+  $('rnck').style.transform=`scale(${.6+.4*ob(p(u,4.6,5.1))})`;
+}
+
+function render(t){
+  show('L1',t<6);show('L2',t>=6&&t<12);show('L3',t>=12&&t<18);show('L4',t>=18);
+  if(t<6)scene1(t);else if(t<12)scene2(t);else if(t<18)scene3(t);else scene4(t);
+  touch(t);
+}
+render(0);
+</script></body></html>
